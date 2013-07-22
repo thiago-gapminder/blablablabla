@@ -1,0 +1,24 @@
+.geo-select div {
+    display: table;
+}
+
+.geo-select-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.im-labels p {
+    
+}
+
+.mountains svg {
+    height: 450;
+    width: 900;
+}
+
+.mountains path {
+    stroke: #607889;
+    fill-opacity: 0.8;
+    stroke-width: 2;
+    stroke-opacity: 0.8;
+}
