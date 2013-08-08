@@ -18,7 +18,10 @@
         var o = gapminder.income_mountain({
             div: "#income_mountain",
             stack: false,
-            geo: ["EUR"]
+            geo: "EUR,AME,EUR",
         });
+        
+        o.update(2000, function() { o.play() });
+        o.play();
 	</script>
 </html>

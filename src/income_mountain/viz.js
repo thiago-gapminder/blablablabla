@@ -31,20 +31,24 @@ gapminder.viz.income_mountain = function income_mountain(properties) {
             .attr("width", width);
     };
 
-    var draw = function draw(mountain_info) {
+    var show = function show(mountain_info) {
         if (!mountain_info || !mountain_info.data) {
             return;
         }
 
+        var name = mountain_info.name || (Math.random() * 1000).toString;
+        var color = mountain_info.color || "orange";
+        var data = mountain_info.data;
+
         var shape = mountain_svg
             .append("g")
-            .attr("id", mountain_info.name + "-income-mountain")
+            .attr("id", name + "-income-mountain")
             .selectAll("path")
             .data(mountain_info.data);
         
         shape.enter()
             .append("path")
-            .attr("fill", mountain_info.color)
+            .attr("fill", color)
             .attr("d", area);
     };
 
@@ -55,22 +59,26 @@ gapminder.viz.income_mountain = function income_mountain(properties) {
     var area = function area(points) {
         return d3.svg.area()
             .interpolate("basis")
-            .x(function(d) { return d.x; })
+            .x(function(d) { return x_position(Math.exp(d.x)); })
             .y0(function(d) { return height - d.y0; })
             .y1(function(d) { return height - (d.y0 + d.y); })
             (points);
     };
     
+    // Maps a gdp into a x position in the svg
+    var x_position = function xpos(value) {
+        return d3.scale.log()
+            .domain([182.5, 152000])    // Map values from this domain (gdp per capita)
+            .range([10, width - 10])    // into values in this range (svg x positions)
+            .clamp(true)                // Squeeze outside values to the extremities
+            (value);
+    }
     
     // Execute
     init(properties);
     
-    if (gapminder.debug) {
-        console.debug("gapminder.viz.income_mountain: complete");
-    }
-    
     return {
-        show: draw,
+        show: show,
         clear: clear
     };
 };

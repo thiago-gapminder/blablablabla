@@ -1,0 +1,83 @@
+.timeline text {
+    font-family: "Arial Rounded MT Bold";
+    opacity: 0.6;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+    /* add unselectable as attribute if we will support IE9 */
+}
+
+.timeline path, line {
+    fill: #3C6170;
+    stroke: #3C6170;
+    shape-rendering: crispEdges;
+    opacity: 0.8;
+}
+
+.play_button circle {
+    fill: #3C6170;
+    stroke: #3C6170;
+    stroke-width: 2px;
+}
+
+.play_button path {
+    fill: #F2FAFC;
+}
+
+.play_button:active circle {
+    fill: #F2FAFC;
+}
+
+.play_button:active path {
+    fill: #3C6170;
+}
+
+.pause_button path {
+    fill: #F2FAFC;
+}
+
+.pause_button circle {
+    fill: #3C6170;
+    stroke: #3C6170;
+    stroke-width: 2px;
+}
+
+.pause_button:active path {
+    fill: #3C6170;
+}
+
+.pause_button:active circle {
+    fill: #F2FAFC;
+    stroke: #3C6170;
+    stroke-width: 2px;
+}
+
+.moveable_button path {
+    stroke: #3C6170; 
+    stroke-width: 2px;
+    stroke-miterlimit: 10;
+    fill: #3C6170;
+}
+
+.moveable_button rect {
+    fill: #F2FAFC;
+}
+
+.moveable_button:active path {
+    fill: #F2FAFC;
+}
+
+.moveable_button:active rect {
+    fill: #3C6170;
+}
+
+.time_slider_year {
+    font-family: "Arial Rounded MT Bold";
+    fill: #3C6170;
+    text-anchor: middle;
+    font-size: 40px;
+    -webkit-user-select: none; /* Chrome/Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+    /* add unselectable as attribute if we will support IE9 */
+}
