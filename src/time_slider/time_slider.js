@@ -1,19 +1,15 @@
 gapminder.tools.time_slider = function time_slider(properties) {
     "use strict";
     
-    var ts_div = {};
-    var ts_svg = {};
-    
     var settings = {
         height: 80,
         width: 270,
         play_interval: 10,
+        time_slash: 0.1,
+        time_precision: 5,
         playing: false,
         sliding: false
     };
-    
-    var time_slash = 0.1;
-    var time_precision = 5;
     
     var interval;
     
@@ -23,7 +19,8 @@ gapminder.tools.time_slider = function time_slider(properties) {
     
     var init = function init(properties) {
         time_slider = gapminder.viz.time_slider(properties);
-        
+
+        // Get buttons and time information from the time_slider
         buttons = time_slider.buttons;
         time = time_slider.time;
         
@@ -32,7 +29,7 @@ gapminder.tools.time_slider = function time_slider(properties) {
         on_stop();
         on_slide();
     };
-    
+
     var toggle = function toggle(button) {
         if (button.attr("visibility") === "hidden") {
             button.attr("visibility", "visible");
@@ -57,22 +54,22 @@ gapminder.tools.time_slider = function time_slider(properties) {
     
     // FIX PRECISION TO ALLOW *ANY* NUMBER
     var set_time_slash = function set_time_slash(new_time_slash) {
-        time_slash = +new_time_slash;
+        settings.time_slash = +new_time_slash;
 
         // only positive accepted right now...
-        if (time_slash < 1) {
-            time_precision = 4 + (time_slash % 1).toString().length - 2; // have to remove 0 and .
+        if (settings.time_slash < 1) {
+            settings.time_precision = 4 + (settings.time_slash % 1).toString().length - 2; // have to remove 0 and .
         } else {
-            time_precision = 4 + (time_slash % 1) === 0 ? + time_slash.toString().length : time_slash.toString().length - 1; // only remove dot when there is decimals!
+            settings.time_precision = 4 + (settings.time_slash % 1) === 0 ? + settings.time_slash.toString().length : settings.time_slash.toString().length - 1; // only remove dot when there is decimals!
         }
     };
     
     // Allow decreasing time soon!
-    var play = function play() {
+    var play = function play(callback) {
         if (settings.playing) {
-            if (time.current + time_slash <= time.end) {
-                time.current += time_slash;
-                time.current = +time.current.toPrecision(time_precision);
+            if (time.current + settings.time_slash <= time.end) {
+                time.current += settings.time_slash;
+                time.current = +time.current.toPrecision(settings.time_precision);
             }
             
             time_slider.update();
@@ -82,38 +79,30 @@ gapminder.tools.time_slider = function time_slider(properties) {
             toggle(buttons.pause_button);
             clearInterval(interval);
         }
+        
+        if (typeof callback === "function") {
+            callback(time.current);
+        }
     };
     
     var on_play = function on_play(callback) {
-        buttons.play_button.on("mousedown", function() {
-            settings.playing = true;
-        });
-        
         buttons.play_button.on("mouseup", function() {
-            if (settings.playing) {
-                toggle(buttons.play_button);
-                toggle(buttons.pause_button);
-                interval = setInterval(play, settings.play_interval);
-                
-                if (typeof callback === "function") {
-                    callback();
-                }
-            }
+            settings.playing = true;
+            toggle(buttons.play_button);
+            toggle(buttons.pause_button);
+            interval = setInterval(play, settings.play_interval, callback);
         });
     };
         
-    var on_stop = function on_stop(callback) {
-        buttons.pause_button.on("mousedown", function() {
-            settings.playing = false;
-        });
-        
+    var on_stop = function on_stop(callback) {    
         buttons.pause_button.on("mouseup", function() {
+            settings.playing = false;
             toggle(buttons.play_button);
             toggle(buttons.pause_button);
             clearInterval(interval);
             
             if (typeof callback === "function") {
-                callback();
+                callback(time.current);
             }
         });
     };
@@ -142,11 +131,10 @@ gapminder.tools.time_slider = function time_slider(properties) {
                 buttons.moveable_button.attr("transform", "translate(" + (48 + timeline_movement(event.pageX)) + ", 25)");
                 time.current = time_slider.timeline_x.invert(60 + timeline_movement(event.pageX)).getFullYear();
                 time_slider.update();
-                //console.log(time_precision);
                 //console.log(timeline_year_reference((60 + timeline_movement(event.pageX))).toPrecision(time_precision));
                 
-                if (callback === "function") {
-                    callback();
+                if (typeof callback === "function") {
+                    callback(time.current);
                 }
             }
         });
@@ -156,12 +144,17 @@ gapminder.tools.time_slider = function time_slider(properties) {
     
     init(properties);
     
+    var debug = function() {
+        console.log(settings);
+    };
+    
     return {
         time: time,
         set_time_slash: set_time_slash,
         on_play: on_play,
         on_stop: on_stop,
-        on_slide: on_slide
+        on_slide: on_slide,
+        debug: debug
     };
 };
 

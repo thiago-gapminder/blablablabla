@@ -1,25 +1,28 @@
 gapminder.viz.time_slider = function viz_time_slider(properties) {
     var ts_div = {};
     var ts_svg = {};
-    
+
     var time = {
         start: 1800,
         current: 1800,
         end: 2100
     };
-    
+
     var buttons = {
         play_button: {},
         pause_button: {},
         moveable_button: {}
     };
-    
+
     var timeline_x = {}; // future timeline X scale
-    
+
     var init = function init(properties) {
         ts_div = d3.select(properties.div);
-        ts_svg = ts_div.append("svg");
-        
+        //console.log(ts_div);
+        ts_svg = ts_div.append("svg")
+            .attr("height", ts_div.attr("height"))
+            .attr("width", ts_div.attr("width"));
+
         time.start = +properties.start || time.start;
         time.end = +properties.end || time.end;
         time.current = +properties.current || time.start;
