@@ -1,3 +1,8 @@
+//import "data";
+//import "viz";
+//import "labels";
+//import "../time_slider/time_slider";
+
 gapminder.income_mountain = function income_mountain(properties) {
     "use strict";   // remove before final?
     
@@ -6,14 +11,14 @@ gapminder.income_mountain = function income_mountain(properties) {
     var active_data = {};
     var draw_data = [];
     
-    var status = "loading"; // maybe use boolean?
+    var ready = false;
 
     var state = {
         command_queue: [],
         maximum_height: 0,
         first_year: 1820,
         final_year: 2010,
-        year: 1990,
+        year: 1820,
         active_geo: [],
         height: 500,
         width: 900,
@@ -23,6 +28,8 @@ gapminder.income_mountain = function income_mountain(properties) {
     
     var mountain = {};                  // Visualization object
     var data_manager = {};              // Data manager object
+    var time_slider = {};               // Time slider object
+    var labels = {};                    // Labels object
     
     var init = function init(properties) {
         // Overwrites state properties
@@ -42,6 +49,19 @@ gapminder.income_mountain = function income_mountain(properties) {
 
         // Removes duplicates from active_geo
         remove_duplicates();
+
+        labels = gapminder.viz.income_mountain.labels({
+            div: properties.div,
+            geo: state.active_geo
+        });
+        
+        console.log(labels.on_click);
+        
+        labels.set_on_click = function(content) {
+            alert(content);
+        };
+        
+        console.log(labels.on_click, labels);
         
         // Loads the income mountain visualization
         mountain = gapminder.viz.income_mountain({
@@ -52,6 +72,39 @@ gapminder.income_mountain = function income_mountain(properties) {
 
         // Loads the income mountain data manager
         data_manager = gapminder.data_manager.income_mountain();
+        
+        var ij = Math.random().toPrecision(3) * 1000;
+        
+        // Creates a div and loads the time slider inside of it
+        d3.select(properties.div).append("div")
+            .attr("id", "time-slider" + ij)
+            .style("width", "270px")
+            .style("height", "80px");
+//            .style("position", "relative")
+//            .style("top", -state.height + "px")
+//            .style("left", state.width - 270 + "px");
+
+        time_slider = gapminder.tools.time_slider({
+            div: "#time-slider" + ij,
+            start: state.first_year,
+            end: state.final_year
+        });
+        
+        // binds what to do on play, stop, slide
+        time_slider.on_play(function(time_slider_year) {
+            state.year = time_slider_year;
+            draw();
+        });
+        
+        time_slider.on_stop(function(time_slider_year) {
+            state.year = time_slider_year;
+            draw();
+        });
+        
+        time_slider.on_slide(function(time_slider_year) {
+            state.year = time_slider_year;
+            draw();
+        });
 
         // Loads and draws data
         var geos_to_load = state.active_geo.length;
@@ -61,7 +114,7 @@ gapminder.income_mountain = function income_mountain(properties) {
 
             // If this is the last geo to load, draw everything
             if (geos_to_load === 0) {
-                status = "success";
+                ready = true;
                 draw();
                 dequeue();
             }
@@ -71,19 +124,24 @@ gapminder.income_mountain = function income_mountain(properties) {
     // Adds a geo to the list
     var add_geo = function add_geo(geo_id) {
         if (state.active_geo.indexOf(geo_id) === -1) {
-            status = "loading";
+            ready = false;
             state.active_geo.push(geo_id);
             active_data = data_manager.load(state.active_geo, function() {
-                status = "success";;
+                ready = true;
                 draw();
+                labels.update(state.active_geo);
                 dequeue();
             });
         }
     };
     
     // Removes a geo from the list
-    var remove_geo = function remove_geo(geo_id) {
+    var remove_geo = function remove_geo(geo_id, callback) {
         state.active_geo.splice(state.active_geo.indexOf(geo_id), 1);
+        
+        if (typeof callback === "function") {
+            callback();
+        }
     };
 
     // Removes duplicates from the list of geos
@@ -95,19 +153,21 @@ gapminder.income_mountain = function income_mountain(properties) {
 
     // Always make sure you have the data already, otherwise draws nothing!
     var draw = function draw() {
-        get_year();
-        calculate_max_height();
-        
-        mountain.clear();   // remove any old paths
-        
-        for (var i = 0; i < draw_data.length; i++) {
-            fix_mountain_height(draw_data[i].data);
-
-            mountain.show({
-                name: draw_data[i].name,
-                data: [draw_data[i].data],
-                color: draw_data[i].color
-            });
+        if (ready) {
+            get_year();
+            calculate_max_height();
+            
+            mountain.clear();   // remove any old paths
+            
+            for (var i = 0; i < draw_data.length; i++) {
+                fix_mountain_height(draw_data[i].data);
+    
+                mountain.show({
+                    name: draw_data[i].name,
+                    data: [draw_data[i].data],
+                    color: draw_data[i].color
+                });
+            }
         }
     };
 
@@ -165,7 +225,7 @@ gapminder.income_mountain = function income_mountain(properties) {
         var future_year = Math.ceil(state.year);
         var factor = state.year % 1;
         
-        if (future_year !== state.year && active_data[geo][future_year]) {
+        if (active_data[geo][future_year]) {
             var future_data = active_data[geo][future_year];
 
             for (var i = 0; i < current_data.length; i++) {
@@ -184,34 +244,8 @@ gapminder.income_mountain = function income_mountain(properties) {
         }
     };
 
-    // send this to timeslider when that's done. But keep the function here.
-    // Should be called using setInterval
-    var play = function play() {
-        if (status === "loading") {
-            state.command_queue.push(play);
-            return;
-        }
-
-        if (state.play && state.year <= state.final_year) {
-            draw();
-            state.year += 0.1;
-            state.year = parseFloat(state.year.toPrecision(5));
-        } else {
-            state.play = false;
-        }
-    };
-
-    var stop = function stop() {
-        if (status === "loading") {
-            state.command_queue.push(stop);
-            return;
-        }
-        
-        state.play = false;
-    };
-    
-    var update = function update(year, callback, params) {
-        if (status === "loading") {
+    var update = function update(year, callback) {
+        if (!ready) {
             state.command_queue.push(wrap_function(update, this, [year, callback]));
             return;
         }
@@ -236,14 +270,15 @@ gapminder.income_mountain = function income_mountain(properties) {
         add: add_geo,
         remove: remove_geo,
         update: update,
-        play: play,
-        stop: stop
+        draw: draw
+//        play: play,
+//        stop: stop
     };
 };
-
 
 // things to do:
 //   Remember to optimize - be able to view all countries (max_height property in elements)
 //   y pos on viz? (like x pos)
 //   rename vars
 //   solve for stack
+//   set timeslider initial moveable button position
