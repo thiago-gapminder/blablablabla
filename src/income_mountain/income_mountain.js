@@ -1,3 +1,8 @@
+//import "data";
+//import "viz";
+//import "labels";
+//import "../time_slider/time_slider";
+
 gapminder.income_mountain = function income_mountain(properties) {
     "use strict";   // remove before final?
     
@@ -23,7 +28,8 @@ gapminder.income_mountain = function income_mountain(properties) {
     
     var mountain = {};                  // Visualization object
     var data_manager = {};              // Data manager object
-    var time_slider = {};
+    var time_slider = {};               // Time slider object
+    var labels = {};                    // Labels object
     
     var init = function init(properties) {
         // Overwrites state properties
@@ -43,6 +49,19 @@ gapminder.income_mountain = function income_mountain(properties) {
 
         // Removes duplicates from active_geo
         remove_duplicates();
+
+        labels = gapminder.viz.income_mountain.labels({
+            div: properties.div,
+            geo: state.active_geo
+        });
+        
+        console.log(labels.on_click);
+        
+        labels.set_on_click = function(content) {
+            alert(content);
+        };
+        
+        console.log(labels.on_click, labels);
         
         // Loads the income mountain visualization
         mountain = gapminder.viz.income_mountain({
@@ -110,6 +129,7 @@ gapminder.income_mountain = function income_mountain(properties) {
             active_data = data_manager.load(state.active_geo, function() {
                 ready = true;
                 draw();
+                labels.update(state.active_geo);
                 dequeue();
             });
         }
@@ -255,7 +275,6 @@ gapminder.income_mountain = function income_mountain(properties) {
 //        stop: stop
     };
 };
-
 
 // things to do:
 //   Remember to optimize - be able to view all countries (max_height property in elements)

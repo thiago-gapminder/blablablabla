@@ -130,7 +130,6 @@ gapminder.viz.time_slider = function viz_time_slider(properties) {
         var text = ts_svg.selectAll(".time_slider_year")
             .data([time.current], function(d) { return d; });
         
-        // EXPAND THIS TO THE INCOME MOUNTAINZ!!!˜!
         text.enter()
             .append("text")
             .attr("class", "time_slider_year")
@@ -154,3 +153,5 @@ gapminder.viz.time_slider = function viz_time_slider(properties) {
         timeline_x: timeline_x
     };
 };
+
+// SPLASH DATA// SPLASH DATA// SPLASH DATA// SPLASH DATA// SPLASH DATA

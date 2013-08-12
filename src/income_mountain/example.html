@@ -13,9 +13,10 @@
     <script type="text/javascript" src="../time_slider/svg_graphics.js"></script>
     <script type="text/javascript" src="../time_slider/viz.js"></script>
     <script type="text/javascript" src="../time_slider/time_slider.js"></script>
-    <script type="text/javascript" src="viz.js"></script>
-    <script type="text/javascript" src="data.js"></script>
-    <script type="text/javascript" src="income_mountain.js"></script>
+    <script src="viz.js"></script>
+    <script src="data.js"></script>
+    <script src="labels.js"></script>
+    <script src="income_mountain.js"></script>
     <link type="text/css" href="style.css" rel="stylesheet">
     <link type="text/css" href="../time_slider/style.css" rel="stylesheet">
 	<script type="text/javascript">
@@ -23,17 +24,13 @@
         
         var o = gapminder.income_mountain({
             div: "#income_mountain",
-            height: 300,
-            width: 450,
-            stack: false,
             geo: "EUR,AME,EUR"
         });
         
         var j = gapminder.income_mountain({
-            height: 300,
+            height: 400,
             width: 450,
             div: "#income_mountain2",
-            stack: false,
             geo: "AFR"
         });
         

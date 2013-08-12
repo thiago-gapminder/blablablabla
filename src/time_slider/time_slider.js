@@ -1,3 +1,6 @@
+//import "viz"
+//import "svg_graphics"
+
 gapminder.tools.time_slider = function time_slider(properties) {
     "use strict";
     
@@ -13,16 +16,16 @@ gapminder.tools.time_slider = function time_slider(properties) {
     
     var interval;
     
-    var time_slider = {};
+    var time_slider_viz = {};
     var buttons = {};
     var time = {};
     
     var init = function init(properties) {
-        time_slider = gapminder.viz.time_slider(properties);
+        time_slider_viz = gapminder.viz.time_slider(properties);
 
         // Get buttons and time information from the time_slider
-        buttons = time_slider.buttons;
-        time = time_slider.time;
+        buttons = time_slider_viz.buttons;
+        time = time_slider_viz.time;
         
         // Mouse bindings
         on_play();
@@ -49,7 +52,7 @@ gapminder.tools.time_slider = function time_slider(properties) {
             .domain([60, 250])
             .clamp(true);
 
-        buttons.moveable_button.attr("transform", "translate(" + (-12 + time_slider.timeline_x(new Date(time.current, 0))) + ", 25)");
+        buttons.moveable_button.attr("transform", "translate(" + (-12 + time_slider_viz.timeline_x(new Date(time.current, 0))) + ", 25)");
     };
     
     // FIX PRECISION TO ALLOW *ANY* NUMBER
@@ -72,7 +75,7 @@ gapminder.tools.time_slider = function time_slider(properties) {
                 time.current = +time.current.toPrecision(settings.time_precision);
             }
             
-            time_slider.update();
+            time_slider_viz.update();
             slide_moveable_button();
         } else {
             toggle(buttons.play_button);
@@ -129,8 +132,8 @@ gapminder.tools.time_slider = function time_slider(properties) {
                 }
 
                 buttons.moveable_button.attr("transform", "translate(" + (48 + timeline_movement(event.pageX)) + ", 25)");
-                time.current = time_slider.timeline_x.invert(60 + timeline_movement(event.pageX)).getFullYear();
-                time_slider.update();
+                time.current = time_slider_viz.timeline_x.invert(60 + timeline_movement(event.pageX)).getFullYear();
+                time_slider_viz.update();
                 //console.log(timeline_year_reference((60 + timeline_movement(event.pageX))).toPrecision(time_precision));
                 
                 if (typeof callback === "function") {
