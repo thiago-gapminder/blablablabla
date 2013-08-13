@@ -1,3 +1,3 @@
-//import "time_slider"
-
-gapminder.graphics = {};
+import "viz";
+import "svg_graphics";
+import "time_slider";

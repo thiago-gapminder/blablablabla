@@ -12,21 +12,17 @@ gapminder.viz.income_mountain.labels = function labels(properties) {
             .style("height", "300px")
             .style("position", "absolute")
             .attr("id", "labels");
-        
-        console.log(properties);
-        
+
         geo = properties.geo;
-        
-        console.log(geo);
     };
     
     var show = function show() {
         var length = geo.length;
-        
+
         for (var i = 0; i < length; i++) {
             var text = labels_div.append("text")
                 .html(geo[i]);
-            
+
             text.append("div")
                 .style("display", "inline-block")
                 .style("width", "10px")
@@ -34,15 +30,15 @@ gapminder.viz.income_mountain.labels = function labels(properties) {
                 .style("background-color", "blue")
                 .style("color", "white")
                 .style("font-size", "10px")
-                .on("click", function() { console.log(on_click); });
-            
+                .on("click", function() { on_click(geo[i]); });
+
             text.append("text")
                 .html("<br>");
         }
     };
-    
+
     var hide = function hide() {
-        
+
     };
 
     var clear = function clear() {
@@ -79,6 +75,6 @@ gapminder.viz.income_mountain.labels = function labels(properties) {
         show: show,
         hide: hide,
         update: update,
-        on_click: set_on_click
+        set_on_click: set_on_click
     };
 };

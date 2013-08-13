@@ -1,6 +1,3 @@
-//import "viz"
-//import "svg_graphics"
-
 gapminder.tools.time_slider = function time_slider(properties) {
     "use strict";
     
@@ -133,6 +130,7 @@ gapminder.tools.time_slider = function time_slider(properties) {
 
                 buttons.moveable_button.attr("transform", "translate(" + (48 + timeline_movement(event.pageX)) + ", 25)");
                 time.current = time_slider_viz.timeline_x.invert(60 + timeline_movement(event.pageX)).getFullYear();
+                console.log(buttons.moveable_button.clientLeft);
                 time_slider_viz.update();
                 //console.log(timeline_year_reference((60 + timeline_movement(event.pageX))).toPrecision(time_precision));
                 

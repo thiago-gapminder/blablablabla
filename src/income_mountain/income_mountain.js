@@ -1,8 +1,3 @@
-//import "data";
-//import "viz";
-//import "labels";
-//import "../time_slider/time_slider";
-
 gapminder.income_mountain = function income_mountain(properties) {
     "use strict";   // remove before final?
     
@@ -57,11 +52,9 @@ gapminder.income_mountain = function income_mountain(properties) {
         
         console.log(labels.on_click);
         
-        labels.set_on_click = function(content) {
+        labels.set_on_click(function(content) {
             alert(content);
-        };
-        
-        console.log(labels.on_click, labels);
+        });
         
         // Loads the income mountain visualization
         mountain = gapminder.viz.income_mountain({
@@ -271,8 +264,6 @@ gapminder.income_mountain = function income_mountain(properties) {
         remove: remove_geo,
         update: update,
         draw: draw
-//        play: play,
-//        stop: stop
     };
 };
 
