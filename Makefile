@@ -1,13 +1,15 @@
-all: clean gapminder.js 
+all: clean gapminder.css gapminder.js gapminder.min.js
 
-css:
-	cat src/**/*.css | cleancss -o gapminder.css
+gapminder.css:
+	cat src/**/*.css | cleancss -o $@
 
-js: $(shell smash --list src/gapminder.js)
+gapminder.js: $(shell smash --list src/gapminder.js)
 	smash src/gapminder.js | uglifyjs - -b -o $@
 
-min: gapminder.js
+gapminder.min.js: gapminder.js
 	uglifyjs gapminder.js -m -c -o $@
 
 clean:
 	rm -f gapminder.js
+	rm -f gapminder.min.js
+	rm -f gapminder.css
