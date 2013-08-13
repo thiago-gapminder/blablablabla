@@ -1,3 +1,94 @@
+Description
+-----------
+
+**gapminder.js** is a JavaScript library that provides visualizations of world
+data using [D3.js](http://d3js.com). **gapminder.js** is developed at Gapminder in Stockholm
+as part of the Gapminder School project, and is distributed under the CC 3.0
+(see LICENSE).
+
+Building
+--------
+
+In case you make changes to the source code and you want to create a new `gapminder.js`
+file, follow the instructions below.
+
+First, download the project from the command line:
+
+```
+git clone git://github.com/thiago-gapminder/blablablabla.git
+```
+
+Next, install [clean-css](http://github.com/GoalSmashers/clean-css), [Smash](http://github.com/mbostock/smash) and [UglifyJS](https://github.com/mishoo/UglifyJS2):
+
+```
+npm install clean-css smash uglify-js
+```
+
+This will install these three node-js libraries. Make sure the path to cleancss, smash and
+uglifyjs is exported to the `$PATH` variable. If not, you have two options: export the path
+to cleancss, smash and uglifyjs to `$PATH` or edit `Makefile` and change where it reads
+`cleancss` to `/path/to/cleancss`, `smash` to `/path/to/smash` and `uglifyjs` to
+`/path/to/uglifyjs`.
+
+To export the paths to `$PATH`, add the following to your `~/.bash_profile`:
+
+```sh
+export SMASH_PATH=/path/to/smash
+export UGLIFYJS_PATH=/path/to/uglifyjs
+export CLEANCSS_PATH=/path/to/cleancss
+export PATH=$PATH:$SMASH_PATH:$UGLIFYJS_PATH
+```
+
+Usually, the path to these are `~/node_modules/clean-css/bin`, `~/node_modules/smash` and
+`~/node_modules/uglify-js/bin`.
+
+Now, head to the directory where you cloned the repository. Type `make`. This will generate
+three files, `gapminder.css`, `gapminder.js` and `gapminder.min.js`, which can now be
+imported into html and used.
+
+Usage
+-----
+
+To use `gapminder.js` you will need to add the following to the `<head>` tag of
+your html page:
+
+```html
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="gapminder.js" charset="utf-8">
+<link href="gapminder.js.css" rel="stylesheet" charset="utf-8">
+```
+
+Data
+----
+
+Example
+-------
+
+The following example creates a *Income Mountain* visualization. Make sure you have the
+data.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Income Mountain Viz</title>
+  </head>
+  <body>
+    <div id="income_mountain"></div>
+  </body>
+  <script type="text/javascript" src="../../d3.v3.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../../gapminder.js" charset="utf-8"></script>
+  <link type="text/css" href="../../gapminder.css" rel="stylesheet" charset="utf-8">
+  <script type="text/javascript">
+    var o = gapminder.income_mountain({
+      div: "#income_mountain",
+      geo: "WORLD"
+    });
+  </script>
+</html>
+```
+
+
 About Gapminder School
 ======================
 
